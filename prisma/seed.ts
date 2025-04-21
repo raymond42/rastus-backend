@@ -47,12 +47,12 @@ async function main() {
   // Create a User
   const user = await prisma.user.create({
     data: {
-      first_name: 'Jane',
-      last_name: 'Smith',
+      firstName: 'Jane',
+      lastName: 'Smith',
       username: 'janesmith',
       email: 'jane@example.com',
       password: 'securehashedpassword', // hash in real apps
-      phone_number: '+1234567890',
+      phoneNumber: '+1234567890',
       address: '456 Fashion Blvd',
       imageUrl: 'https://example.com/janesmith.jpg',
       isAdmin: false,
