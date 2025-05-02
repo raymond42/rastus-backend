@@ -1,0 +1,60 @@
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+export declare class UsersController {
+    private readonly usersService;
+    constructor(usersService: UsersService);
+    create(createUserDto: CreateUserDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        imageUrl: string;
+        firstName: string;
+        lastName: string;
+        username: string;
+        email: string;
+        password: string;
+        phoneNumber: string;
+        address: string;
+        isAdmin: boolean;
+        isVerified: boolean;
+        isBlocked: boolean;
+        isActive: boolean;
+    }>;
+    findAll(): import(".prisma/client").Prisma.PrismaPromise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        imageUrl: string;
+        firstName: string;
+        lastName: string;
+        username: string;
+        email: string;
+        password: string;
+        phoneNumber: string;
+        address: string;
+        isAdmin: boolean;
+        isVerified: boolean;
+        isBlocked: boolean;
+        isActive: boolean;
+    }[]>;
+    findOne(id: string): import(".prisma/client").Prisma.Prisma__UserClient<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        imageUrl: string;
+        firstName: string;
+        lastName: string;
+        username: string;
+        email: string;
+        password: string;
+        phoneNumber: string;
+        address: string;
+        isAdmin: boolean;
+        isVerified: boolean;
+        isBlocked: boolean;
+        isActive: boolean;
+    } | null, null, import(".prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    update(id: string, updateUserDto: UpdateUserDto): string;
+    remove(id: string): string;
+}
