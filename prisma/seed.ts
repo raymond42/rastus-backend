@@ -19,24 +19,41 @@ async function main() {
     },
   });
 
-  // Create Products and assign to category + collection
+  // Default meta info for frontend
+  const defaultMeta = {
+    size: { name: 'M', symbol: 'M', fullName: 'Medium' },
+    color: { name: 'Blue', imageUrl: 'https://example.com/floral-shirt.jpg' },
+    quantity: 1,
+    rating: 4.5,
+    reviews: 24,
+  };
+
+  // Create Products
   const product1 = await prisma.product.create({
     data: {
       name: 'Floral Shirt',
-      description: 'Light and breezy floral patterned shirt',
-      price: 49.99,
+      description: `Light and breezy floral patterned shirt.
+        Size: ${defaultMeta.size.fullName}
+        Color: ${defaultMeta.color.name}
+        Rating: ${defaultMeta.rating}
+        Reviews: ${defaultMeta.reviews}`,
+      price: 30000, // store price in FRW as number
       stock: 100,
       categoryId: category.id,
       newCollectionId: newCollection.id,
-      imageUrl: 'https://example.com/floral-shirt.jpg',
+      imageUrl: defaultMeta.color.imageUrl,
     },
   });
 
   const product2 = await prisma.product.create({
     data: {
       name: 'Denim Jacket',
-      description: 'Classic denim with a modern cut',
-      price: 89.99,
+      description: `Classic denim with a modern cut.
+        Size: ${defaultMeta.size.fullName}
+        Color: ${defaultMeta.color.name}
+        Rating: ${defaultMeta.rating}
+        Reviews: ${defaultMeta.reviews}`,
+      price: 50000,
       stock: 50,
       categoryId: category.id,
       newCollectionId: newCollection.id,

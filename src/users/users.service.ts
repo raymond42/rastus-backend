@@ -10,7 +10,7 @@ export class UsersService {
 
   async create(data: CreateUserDto) {
     const salt = genSaltSync(10);
-    const hashedPassword = await hashSync(data.password, salt);
+    const hashedPassword = hashSync(data.password, salt);
 
     return this.prisma.user.create({
       data: {
