@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { genSaltSync, hashSync, compare } from 'bcryptjs';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -30,9 +31,9 @@ export class AuthService {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
     const payload = {
-      sub: user.id,
+      id: user.id,
       email: user.email,
-      isAdmin: user.isAdmin,
+      role: user.role,
     };
 
     const token = this.jwtService.sign(payload);
@@ -40,7 +41,7 @@ export class AuthService {
     return {
       user: {
         email: user.email,
-        isAdmin: user.isAdmin,
+        role: user.role,
       },
       access_token: token,
     };

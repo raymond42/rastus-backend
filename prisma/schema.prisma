@@ -8,6 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  CUSTOMER
+  ADMIN
+  SUPER_ADMIN
+}
+
 model User {
   id        String   @id @default(cuid())
   firstName      String
@@ -21,28 +27,48 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   imageUrl  String
-  isAdmin   Boolean @default(false)
+  role     Role @default(CUSTOMER)
   isVerified Boolean @default(false)
   isBlocked  Boolean @default(false)
   isActive  Boolean @default(false)
   carts Cart[]
 }
 
+
 model Product {
-  id        String   @id @default(cuid())
-  name      String
-  description String
-  price     Float
-  stock     Int
-  categoryId String
-  category  Category @relation(fields: [categoryId], references: [id])
-  imageUrl  String
-  orders    Order[]  @relation("OrderToProduct")
-  carts     Cart[]
-  newCollectionId String?
-  newCollection NewCollection? @relation(fields: [newCollectionId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String          @id @default(cuid())
+  name             String
+  description      String
+  price            Float
+  stock            Int
+  imageUrl         String
+  categoryId       String
+  category         Category        @relation(fields: [categoryId], references: [id])
+  colors           Color[]         @relation("ProductColors")
+  sizes            Size[]          @relation("ProductSizes")
+  isFeatured       Boolean         @default(false)
+  orders           Order[]         @relation("OrderToProduct")
+  carts            Cart[]
+  newCollectionId  String?
+  newCollection    NewCollection?  @relation(fields: [newCollectionId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Size {
+  id         String   @id @default(cuid())
+  name       String
+  symbol     String
+  fullName   String
+  products   Product[]  @relation("ProductSizes")
+}
+
+model Color {
+  id         String   @id @default(cuid())
+  name       String
+  imageUrl   String
+  productId  String?
+  product    Product?  @relation("ProductColors", fields: [productId], references: [id])
 }
 
 model Category {
