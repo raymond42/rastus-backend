@@ -12,12 +12,45 @@ export class UsersService {
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(data.password, salt);
 
-    return this.prisma.user.create({
-      data: {
-        ...data,
-        password: hashedPassword,
-      },
-    });
+    try {
+      const existingUsers = await this.prisma.user.findFirst({
+        //check if user already exists by email or username
+        where: {
+          OR: [{ email: data.email }, { username: data.username }],
+        },
+      });
+
+      if (existingUsers) {
+        return {
+          message: 'User already exists',
+          status: 403,
+        };
+      }
+
+      return await this.prisma.user.create({
+        data: {
+          ...data,
+          password: hashedPassword,
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          username: true,
+          role: true,
+          phoneNumber: true,
+          address: true,
+          imageUrl: true,
+          isVerified: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      throw new Error('User creation failed: ' + error.message);
+    }
   }
 
   findAll() {
