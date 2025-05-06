@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import { ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

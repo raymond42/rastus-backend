@@ -15,7 +15,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Role } from '@prisma/client';
 import { CreateProductDto } from './dto/createProduct.dto';
 
-@Controller('products')
+@Controller('v1/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
