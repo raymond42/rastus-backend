@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
+    "types": ["node", "multer"],
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,

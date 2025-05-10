@@ -20,7 +20,7 @@ export class AuthService {
 
     const isMatch = await compare(password, user.password);
     if (!isMatch) {
-      throw new UnauthorizedException('Invalid Password');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return user;
@@ -37,12 +37,15 @@ export class AuthService {
 
     const token = this.jwtService.sign(payload);
 
-    return {
+    const response = {
+      message: 'User logged in successfully',
+      status: 200,
       user: {
         email: user.email,
         role: user.role,
       },
       access_token: token,
     };
+    return response as LoginResponseDto;
   }
 }

@@ -13,16 +13,35 @@ export class UsersService {
     const hashedPassword = hashSync(data.password, salt);
 
     try {
-      const existingUsers = await this.prisma.user.findFirst({
-        //check if user already exists by email or username
-        where: {
-          OR: [{ email: data.email }, { username: data.username }],
-        },
+      const existingUserEmail = await this.prisma.user.findUnique({
+        where: { email: data.email },
       });
 
-      if (existingUsers) {
+      if (existingUserEmail) {
         return {
-          message: 'User already exists',
+          message: 'Email is already in use',
+          status: 403,
+        };
+      }
+
+      const existingUserUsername = await this.prisma.user.findUnique({
+        where: { username: data.username },
+      });
+
+      if (existingUserUsername) {
+        return {
+          message: 'Username is already in use',
+          status: 403,
+        };
+      }
+
+      const existingUserPhoneNumber = await this.prisma.user.findFirst({
+        where: { phoneNumber: data.phoneNumber },
+      });
+
+      if (existingUserPhoneNumber) {
+        return {
+          message: 'Phone number is already in use',
           status: 403,
         };
       }

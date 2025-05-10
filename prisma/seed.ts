@@ -1,18 +1,30 @@
 import { PrismaClient, Role } from '@prisma/client';
 import { genSalt, hash } from 'bcryptjs';
+
 const prisma = new PrismaClient();
 
 async function main() {
-  // Default meta info for frontend
-  const defaultMeta = {
-    size: { name: 'M', symbol: 'M', fullName: 'Medium' },
-    color: { name: 'Blue', imageUrl: 'https://example.com/floral-shirt.jpg' },
-    quantity: 1,
-    rating: 4.5,
-    reviews: 24,
+  // Default image data (refined structure)
+  const defaultImage = {
+    name: 'floral-shirt.jpg',
+    color: 'Blue',
+    imageUrl: 'https://example.com/floral-shirt.jpg',
   };
 
-  // Create Categories and New Collection (assuming they exist in your schema)
+  const defaultSubImages = [
+    {
+      name: 'floral-shirt-side.jpg',
+      color: 'Blue',
+      imageUrl: 'https://example.com/floral-shirt-side.jpg',
+    },
+    {
+      name: 'floral-shirt-back.jpg',
+      color: 'Blue',
+      imageUrl: 'https://example.com/floral-shirt-back.jpg',
+    },
+  ];
+
+  // Create Category
   const category = await prisma.category.create({
     data: {
       name: 'Clothing',
@@ -20,6 +32,7 @@ async function main() {
     },
   });
 
+  // Create New Collection
   const newCollection = await prisma.newCollection.create({
     data: {
       name: 'Spring 2025',
@@ -27,155 +40,87 @@ async function main() {
     },
   });
 
-  // Create Colors
-  const blueColor = await prisma.color.create({
-    data: {
-      name: 'Blue',
-      imageUrl: 'https://example.com/blue-color.jpg',
-    },
-  });
-
-  const redColor = await prisma.color.create({
-    data: {
-      name: 'Red',
-      imageUrl: 'https://example.com/red-color.jpg',
-    },
-  });
-
-  const greenColor = await prisma.color.create({
-    data: {
-      name: 'Green',
-      imageUrl: 'https://example.com/green-color.jpg',
-    },
-  });
-  const blackColor = await prisma.color.create({
-    data: {
-      name: 'Black',
-      imageUrl: 'https://example.com/black-color.jpg',
-    },
-  });
-
-  const yellowColor = await prisma.color.create({
-    data: {
-      name: 'Yellow',
-      imageUrl: 'https://example.com/yellow-color.jpg',
-    },
-  });
-
-  const whiteColor = await prisma.color.create({
-    data: {
-      name: 'White',
-      imageUrl: 'https://example.com/white-color.jpg',
-    },
-  });
-
-  const purpleColor = await prisma.color.create({
-    data: {
-      name: 'Purple',
-      imageUrl: 'https://example.com/purple-color.jpg',
-    },
-  });
-
-  const orangeColor = await prisma.color.create({
-    data: {
-      name: 'Orange',
-      imageUrl: 'https://example.com/orange-color.jpg',
-    },
-  });
-
   // Create Sizes
-  const smallSize = await prisma.size.create({
-    data: {
-      name: 'Small',
-      symbol: 'S',
-      fullName: 'Small',
-    },
-  });
+  const [smallSize, mediumSize, largeSize, extraLargeSize] = await Promise.all([
+    prisma.size.create({
+      data: { name: 'Small', symbol: 'S', fullName: 'Small' },
+    }),
+    prisma.size.create({
+      data: { name: 'Medium', symbol: 'M', fullName: 'Medium' },
+    }),
+    prisma.size.create({
+      data: { name: 'Large', symbol: 'L', fullName: 'Large' },
+    }),
+    prisma.size.create({
+      data: { name: 'Extra Large', symbol: 'XL', fullName: 'Extra Large' },
+    }),
+  ]);
 
-  const mediumSize = await prisma.size.create({
-    data: {
-      name: 'Medium',
-      symbol: 'M',
-      fullName: 'Medium',
-    },
-  });
-
-  const largeSize = await prisma.size.create({
-    data: {
-      name: 'Large',
-      symbol: 'L',
-      fullName: 'Large',
-    },
-  });
-  const extraLargeSize = await prisma.size.create({
-    data: {
-      name: 'Extra Large',
-      symbol: 'XL',
-      fullName: 'Extra Large',
-    },
-  });
-
-  // Create Products
+  // Create Product 1
   const product1 = await prisma.product.create({
     data: {
       name: 'Floral Shirt',
-      description: `Light and breezy floral patterned shirt. Size: ${defaultMeta.size.fullName} Color: ${defaultMeta.color.name} Rating: ${defaultMeta.rating} Reviews: ${defaultMeta.reviews}`,
-      price: 30000, // store price in FRW as number
+      shortDescription: 'Stylish floral shirt for summer.',
+      longDescription:
+        'Light and breezy floral patterned shirt. Perfect for casual outings.',
+      price: 30000,
       stock: 100,
       categoryId: category.id,
       newCollectionId: newCollection.id,
-      imageUrl: defaultMeta.color.imageUrl,
-      colors: {
+      image: [defaultImage],
+      subImages: defaultSubImages,
+      sizes: {
         connect: [
-          { id: blueColor.id },
-          { id: redColor.id },
-          { id: orangeColor.id },
-          { id: greenColor.id },
-          { id: blackColor.id },
-          { id: yellowColor.id },
-          { id: whiteColor.id },
-          { id: purpleColor.id },
+          { id: smallSize.id },
+          { id: mediumSize.id },
+          { id: largeSize.id },
+          { id: extraLargeSize.id },
         ],
       },
+    },
+  });
+
+  // Create Product 2
+  const product2 = await prisma.product.create({
+    data: {
+      name: 'Denim Jacket',
+      shortDescription: 'Classic denim with a modern cut.',
+      longDescription:
+        'A durable and timeless jacket. Great for layering in spring.',
+      price: 50000,
+      stock: 50,
+      categoryId: category.id,
+      newCollectionId: newCollection.id,
+      image: [
+        {
+          name: 'denim-jacket.jpg',
+          color: 'Dark Blue',
+          imageUrl: 'https://example.com/denim-jacket.jpg',
+        },
+      ],
+      subImages: [
+        {
+          name: 'denim-jacket-back.jpg',
+          color: 'Dark Blue',
+          imageUrl: 'https://example.com/denim-jacket-back.jpg',
+        },
+        {
+          name: 'denim-jacket-side.jpg',
+          color: 'Dark Blue',
+          imageUrl: 'https://example.com/denim-jacket-side.jpg',
+        },
+      ],
       sizes: {
         connect: [
           { id: mediumSize.id },
           { id: largeSize.id },
           { id: extraLargeSize.id },
-          { id: smallSize.id },
         ],
       },
     },
   });
 
-  const product2 = await prisma.product.create({
-    data: {
-      name: 'Denim Jacket',
-      description: `Classic denim with a modern cut. Size: ${defaultMeta.size.fullName} Color: ${defaultMeta.color.name} Rating: ${defaultMeta.rating} Reviews: ${defaultMeta.reviews}`,
-      price: 50000,
-      stock: 50,
-      categoryId: category.id,
-      newCollectionId: newCollection.id,
-      imageUrl: 'https://example.com/denim-jacket.jpg',
-      colors: {
-        connect: [
-          { id: blueColor.id },
-          { id: blackColor.id },
-          { id: whiteColor.id },
-          { id: redColor.id },
-        ],
-      },
-      sizes: {
-        connect: [
-          { id: largeSize.id },
-          { id: smallSize.id },
-          { id: extraLargeSize.id },
-        ],
-      },
-    },
-  });
-
-  // Create a User
+  // Create User
   const salt = await genSalt(10);
   const hashedPassword = await hash('securehashedpassword', salt);
 
@@ -185,7 +130,7 @@ async function main() {
       lastName: 'Smith',
       username: 'janesmith',
       email: 'jane@example.com',
-      password: hashedPassword, // hash in real apps
+      password: hashedPassword,
       phoneNumber: '+1234567890',
       address: '456 Fashion Blvd',
       imageUrl: 'https://example.com/janesmith.jpg',
@@ -195,7 +140,7 @@ async function main() {
     },
   });
 
-  // Create an Order with Products
+  // Create Order
   await prisma.order.create({
     data: {
       userId: user.id,
@@ -207,7 +152,7 @@ async function main() {
     },
   });
 
-  // Create a Cart with Products
+  // Create Cart
   await prisma.cart.create({
     data: {
       userId: user.id,
@@ -217,14 +162,12 @@ async function main() {
       },
     },
   });
+
+  console.log('🌱 Seeding complete!');
 }
 
 main()
-  .then(() => {
-    console.log('🌱 Seeding complete!');
-    return prisma.$disconnect();
-  })
   .catch((e) => {
     console.error('❌ Seeding error:', e);
-    return prisma.$disconnect();
-  });
+  })
+  .finally(() => prisma.$disconnect());

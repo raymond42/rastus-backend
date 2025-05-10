@@ -11,6 +11,17 @@ async function bootstrap() {
     .setTitle('Rastus backend API')
     .setDescription('The Rastus API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        in: 'header',
+      },
+      'access-token', // 👈 Name of the security scheme
+    )
+    .addTag('Rastus')
     .build();
 
   app.useGlobalPipes(

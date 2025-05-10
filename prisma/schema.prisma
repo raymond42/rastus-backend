@@ -38,13 +38,14 @@ model User {
 model Product {
   id               String          @id @default(cuid())
   name             String
-  description      String
+  shortDescription String
+  longDescription  String
   price            Float
   stock            Int
-  imageUrl         String
+  image            Json            // 👈 Changed from imageUrl: String
+  subImages        Json            // 👈 New field for additional images
   categoryId       String
   category         Category        @relation(fields: [categoryId], references: [id])
-  colors           Color[]         @relation("ProductColors")
   sizes            Size[]          @relation("ProductSizes")
   isFeatured       Boolean         @default(false)
   orders           Order[]         @relation("OrderToProduct")
@@ -61,14 +62,6 @@ model Size {
   symbol     String
   fullName   String
   products   Product[]  @relation("ProductSizes")
-}
-
-model Color {
-  id         String   @id @default(cuid())
-  name       String
-  imageUrl   String
-  productId  String?
-  product    Product?  @relation("ProductColors", fields: [productId], references: [id])
 }
 
 model Category {

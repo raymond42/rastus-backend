@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 import {
@@ -13,6 +13,10 @@ export class AuthController {
 
   @Post('login')
   @ApiBody({ type: LoginDto })
+  @HttpCode(200)
+  @ApiUnauthorizedResponse({
+    description: 'Invalid credentials',
+  })
   @ApiOkResponse({
     type: LoginResponseDto,
     description: 'User logged in successfully',
@@ -21,6 +25,6 @@ export class AuthController {
     description: 'Invalid credentials',
   })
   async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
-    return await this.authService.login(loginDto);
+    return this.authService.login(loginDto);
   }
 }
